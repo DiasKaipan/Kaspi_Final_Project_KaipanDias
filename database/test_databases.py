@@ -15,21 +15,22 @@ class TestAllDatabases:
         account2 = Account.random()
         database_connected.save(account)
         database_connected.save(account2)
-        # got_account = database_connected.get_object(account.id_)
-        # assert account == got_account
-        #
-        # with pytest.raises(ObjectNotFound):
-        #     database_connected.get_object(uuid4())
-        #
-        # all_objects = database_connected.get_objects()
-        # assert len(all_objects) == 2
-        # for acc in all_objects:
-        #     assert isinstance(acc, Account)
-        #
-        # account.currency = "USD"
-        # database_connected.save(account)
-        # got_account = database_connected.get_object(account.id_)
-        # assert account == got_account
+        got_account = database_connected.get_object(account.id_)
+
+        assert account == got_account
+
+        with pytest.raises(ObjectNotFound):
+            database_connected.get_object(uuid4())
+
+        all_objects = database_connected.get_objects()
+        assert len(all_objects) == 2
+        for acc in all_objects:
+            assert isinstance(acc, Account)
+
+        account.currency = "BTC"
+        database_connected.save(account)
+        got_account = database_connected.get_object(account.id_)
+        assert account == got_account
 
     def test_connection(self, connection_string_sqlite3: str) -> None:
         database = AccountDatabaseSQLlite3(connection=connection_string_sqlite3)
