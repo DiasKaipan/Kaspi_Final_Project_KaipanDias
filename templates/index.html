@@ -12,7 +12,7 @@
     <tr onclick="window.location='/accounts/{{account.id_}}'">
         <td>{{account.id_}}</td>
         <td
-            {% if account.balance < 200 %}
+            {% if account.balance %}
                 class = "table-danger"
             {% endif %}
         >{{account.balance}}</td>

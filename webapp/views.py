@@ -8,20 +8,13 @@ from django.shortcuts import render
 
 from account.account import Account
 from database.database import ObjectNotFound
-from database.implementations.postgres_db import AccountDatabasePostgres
+#from database.implementations.postgres_db import AccountDatabasePostgres
+from database.implementations.sqlite3 import AccountDatabaseSQLlite3
 from database.implementations.ram import AccountDatabaseRAM
 
-dbname: str = os.environ.get("pg_dbname", "")
-if dbname == "":
-    database = AccountDatabaseRAM()
-    print("Using RAM")
-else:
-    port:int = 25060
-    user:str = os.environ.get("pg_user")
-    password:str = os.environ.get("pg_password")
-    host:str = "db-postgresql-nyc3-99638-do-user-4060406-0.b.db.ondigitalocean.com"
-    connection_str = f"dbname={dbname} port={port} user={user} password={password} host={host}"
-    database = AccountDatabasePostgres(connection=connection_str)
+
+connection_str = "db.sqlite3"
+database = AccountDatabaseSQLlite3(connection=connection_str)
 
 
 def accounts_list(request: HttpRequest) -> HttpResponse:
@@ -34,7 +27,7 @@ def index(request: HttpRequest) -> HttpResponse:
     <html>
         <body>
            <h1>Hello, World!</h1> 
-           <h3>Try to access <a href="/api/accounts/">/api/accounts/</a></h3>
+           <h3>Try to access <a href="/accounts/">/accounts/</a></h3>
         </body>
     </html>
     """)

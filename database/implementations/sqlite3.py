@@ -22,7 +22,7 @@ class AccountDatabaseSQLlite3(ABC):
                 CREATE TABLE IF NOT EXISTS accounts (
                     id varchar(255) primary key ,
                     currency VARCHAR,
-                    balance DECIMAL(1,1000) 
+                    balance DECIMAL
                 );
                 """)
         self.conn.commit()
