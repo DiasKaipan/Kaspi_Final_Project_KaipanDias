@@ -20,6 +20,7 @@ from webapp import views
 
 urlpatterns = [
     path('', views.index),
-    path('accounts/', views.accounts_list),
+    #path('accounts/', views.accounts_list),
     path('api/accounts/', views.accounts),
+    path('new_account/', views.create_account),
 ]

@@ -15,16 +15,26 @@ import sqlite3
 @dataclass
 class AccountDatabaseSQLlite3(ABC):
     def __init__(self, connection, *args, **kwargs):
-        self.conn = sqlite3.connect(connection)
+        self.conn = sqlite3.connect(connection, check_same_thread=False)
         cursor = self.conn.cursor()
         print("Database created and Successfully Connected to SQLLite")
         cursor.execute("""
-                CREATE TABLE IF NOT EXISTS accounts (
-                    id varchar(255) primary key ,
-                    currency VARCHAR,
-                    balance DECIMAL
-                );
-                """)
+                        CREATE TABLE IF NOT EXISTS accounts (
+                            id varchar(255) primary key ,
+                            currency VARCHAR,
+                            balance DECIMAL
+                        );
+                        """)
+        cursor.execute("""
+                        CREATE TABLE IF NOT EXISTS transfers (
+                            transaction_id varchar(255) primary key ,
+                            account_from varchar(255)  ,
+                            account_to varchar(255)  ,
+                            currency VARCHAR,
+                            amount DECIMAL
+                            date DATETIME
+                        );
+                        """)
         self.conn.commit()
 
     def save(self, account: Account) -> None:
@@ -54,7 +64,6 @@ class AccountDatabaseSQLlite3(ABC):
             cur.execute(ex_str, values)
             self.conn.commit()
 
-
     def clear_all(self) -> None:
         cur = self.conn.cursor()
         cur.execute("DELETE FROM accounts;")
@@ -68,7 +77,8 @@ class AccountDatabaseSQLlite3(ABC):
         df = pd.DataFrame(data, columns=cols)
         return [self.pandas_row_to_account(row) for index, row in df.iterrows()]
 
-    def pandas_row_to_account(self, row: Series) -> Account:
+    @staticmethod
+    def pandas_row_to_account(row: Series) -> Account:
         return Account(
             id_=UUID(row["id"]),
             currency=row["currency"],
